@@ -25,6 +25,26 @@ function authenticationToken(req, res, next) {
     })
 }
 
+router.get('/job_post', authenticationToken, async (req, res) => {
+
+    try {
+        db.query(`SELECT * FROM job_post`, (err, result) => {
+
+            if (err) {
+                console.error('Error fetching item:', err);
+                res.status(500).json({
+                    message: 'Internal Server Error'
+                });
+            } else {
+                res.status(200).json(result);
+            }
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ err: 'Internal Server Error' })
+    }
+})
+
 router.post('/job_post/:id', authenticationToken, async (req, res) => {
     let employer_id = req.params.id;
 

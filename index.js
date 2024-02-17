@@ -20,6 +20,14 @@ app.use('/api', jobPostRoutes)
 const jobApplicationRoutes = require('./app/routes/job_application')
 app.use('/api', jobApplicationRoutes)
 
+const usersRoutes = require('./app/routes/users')
+app.use('/api', usersRoutes)
+
+app.get('/api', (req, res) => {
+    res.json(
+        { message: 'Welcome to Gradhub!' }
+    )
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
