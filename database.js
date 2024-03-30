@@ -15,12 +15,4 @@ pool.on('error', (err) => {
     // You can also implement reconnection logic here if needed
 });
 
-pool.connect((err) => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log('Connected to MySQL');
-    }
-})
-
 module.exports = pool.promise();
