@@ -50,7 +50,7 @@ router.post('/job_application/:job_seeker_id/:job_post_id', authenticationToken,
 
     try {
         const insertUserQuery = `INSERT INTO job_application (job_post_id, job_seeker_id) VALUES (?, ?)`;
-        await db.promise().execute(insertUserQuery, [
+        await db.execute(insertUserQuery, [
             job_seeker_id,
             job_post_id,
         ]);

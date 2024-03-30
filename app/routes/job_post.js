@@ -66,7 +66,7 @@ router.post('/job_post/:id', authenticationToken, async (req, res) => {
                                                         job_description, minimum_qualification, job_type, employment_type, perks_benefits,
                                                         required_skills, job_summary, about_us, employer_id) VALUES 
                                                         (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        await db.promise().execute(insertUserQuery, [
+        await db.execute(insertUserQuery, [
             job_position,
             company_name,
             address,
