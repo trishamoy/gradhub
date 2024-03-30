@@ -13,8 +13,6 @@ function authenticationToken(req, res, next) {
         return res.status(401).json({ err: 'Unauthorized' });
     }
 
-    console.log(token)
-
     jwt.verify(token, secretKey, (err, user) => {
         if (err) {
             return res.status(401).json({ err });
