@@ -43,6 +43,25 @@ router.get('/job_post', authenticationToken, async (req, res) => {
     }
 })
 
+
+
+router.get('/job_post/:id', authenticationToken, async (req, res) => {
+    let employer_id = req.params.id;
+
+    try {
+        db.query(`SELECT * FROM job_post WHERE id = ${employer_id}`, (err, result) => {
+            if (err) {
+                res.status(500).json({err: 'Internal Server Error'});
+            } else {
+                res.status(200).json(result);
+            }
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({err: 'Internal Server Error'})
+    }
+})
+
 router.post('/job_post/:id', authenticationToken, async (req, res) => {
     let employer_id = req.params.id;
 
@@ -86,22 +105,6 @@ router.post('/job_post/:id', authenticationToken, async (req, res) => {
     } catch (err) {
         console.log(err);
         res.status(500).json({ err: 'Internal Server Error' })
-    }
-})
-
-router.get('/job_post', authenticationToken, async (req, res) => {
-
-    try {
-        db.query('SELECT * FROM job_post', (err, result) => {
-            if (err) {
-                res.status(500).json({err: 'Internal Server Error'});
-            } else {
-                res.status(200).json(result);
-            }
-        })
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({err: 'Internal Server Error'})
     }
 })
 
