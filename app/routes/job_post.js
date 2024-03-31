@@ -49,7 +49,7 @@ router.get('/job_post/:id', authenticationToken, async (req, res) => {
     let employer_id = req.params.id;
 
     try {
-        db.query(`SELECT * FROM job_post WHERE id = ${employer_id}`, (err, result) => {
+        db.query(`SELECT * FROM job_post WHERE employer_id = ${employer_id}`, (err, result) => {
             if (err) {
                 res.status(500).json({err: 'Internal Server Error'});
             } else {
