@@ -18,7 +18,7 @@ router.post('/login/:type', async (req, res) => {
             const {email, password} = req.body;
 
             const getUserQuery = `SELECT * FROM job_seeker WHERE email = ?`;
-            const [rows] = await db.execute(getUserQuery, [email]);
+            const [rows] = await db.promise().execute(getUserQuery, [email]);
 
             if (rows.length === 0) {
                 return res.status(401).json({err: 'Invalid Email or Password'});
@@ -38,7 +38,7 @@ router.post('/login/:type', async (req, res) => {
             const {work_email, password} = req.body;
 
             const getUserQuery = `SELECT * FROM employer WHERE work_email = ?`;
-            const [rows] = await db.execute(getUserQuery, [work_email]);
+            const [rows] = await db.promise().execute(getUserQuery, [work_email]);
 
             if (rows.length === 0) {
                 return res.status(401).json({err: 'Invalid Email or Password'});

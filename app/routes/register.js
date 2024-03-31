@@ -71,7 +71,7 @@ router.post('/register/:type', async (req, res) => {
             const insertUserQuery = `INSERT INTO employer (first_name, last_name, work_email, position, mobile_number,
                                                         company_name, company_size, hiring_needs, password) 
                                                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-            await db.execute(insertUserQuery, [
+            await db.promise().execute(insertUserQuery, [
                 first_name,
                 last_name,
                 work_email,
