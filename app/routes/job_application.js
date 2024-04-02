@@ -49,10 +49,13 @@ router.post('/job_application/:job_seeker_id/:job_post_id', authenticationToken,
     let job_post_id = req.params.job_post_id;
 
     try {
-        const insertUserQuery = `INSERT INTO job_application (job_post_id, job_seeker_id) VALUES (?, ?)`;
-        await db.execute(insertUserQuery, [
-            job_seeker_id,
+        const { application_status } = req.body
+
+        const insertUserQuery = `INSERT INTO job_application (job_post_id, job_seeker_id, application_status) VALUES (?, ?, ?)`;
+        db.execute(insertUserQuery, [
             job_post_id,
+            job_seeker_id,
+            application_status
         ]);
 
         res.status(200).json({ message: 'Job Application Successful'});

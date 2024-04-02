@@ -9,57 +9,50 @@ const secretKey = 'balmes-secret-key';
 
 router.use(bodyParser.json())
 
-router.post('/login/:type', async (req, res) => {
-    let type = req.params.type;
-
+router.post('/login', async (req, res) => {
     try {
-        if (type === "job_seeker") {
-            //? Job Seeker Login
-            const {email, password} = req.body;
+        const { email, password } = req.body;
 
-            const getUserQuery = `SELECT * FROM job_seeker WHERE email = ?`;
-            const [rows] = await db.promise().execute(getUserQuery, [email]);
+        // Check if user is a job seeker
+        const jobSeekerQuery = `SELECT * FROM job_seeker WHERE email = ?`;
+        const [jobSeekerRows] = await db.promise().execute(jobSeekerQuery, [email]);
 
-            if (rows.length === 0) {
-                return res.status(401).json({err: 'Invalid Email or Password'});
-            }
-
-            const user = rows[0];
+        if (jobSeekerRows.length > 0) {
+            // User is a job seeker
+            const user = jobSeekerRows[0];
             const passwordMatch = await bcrypt.compare(password, user.password);
 
             if (!passwordMatch) {
-                return res.status(401).json({err: 'Invalid Email or Password'});
+                return res.status(401).json({ err: 'Invalid Email or Password' });
             }
 
-            const token = jwt.sign({userId: user.id, email: user.email}, secretKey, {expiresIn: '1h'});
-            res.status(200).json({message: 'Login Successful', token});
-        } else if (type === "employer") {
-            //? Employer Login
-            const {work_email, password} = req.body;
-
-            const getUserQuery = `SELECT * FROM employer WHERE work_email = ?`;
-            const [rows] = await db.promise().execute(getUserQuery, [work_email]);
-
-            if (rows.length === 0) {
-                return res.status(401).json({err: 'Invalid Email or Password'});
-            }
-
-            const user = rows[0];
-            const passwordMatch = await bcrypt.compare(password, user.password);
-
-            if (!passwordMatch) {
-                return res.status(401).json({err: 'Invalid Email or Password'});
-            }
-
-            const token = jwt.sign({userId: user.id, work_email: user.work_email}, secretKey, {expiresIn: '1h'});
-            res.status(200).json({message: 'Login Successful', token});
-        } else {
-            res.status(400).json({err: 'Invalid Login Type'});
+            const token = jwt.sign({ userId: user.id, email: user.email }, secretKey, { expiresIn: '1h' });
+            return res.status(200).json({ message: 'Login Successful', token, userType: 'job_seeker' });
         }
+
+        // Check if user is an employer
+        const employerQuery = `SELECT * FROM employer WHERE work_email = ?`;
+        const [employerRows] = await db.promise().execute(employerQuery, [email]);
+
+        if (employerRows.length > 0) {
+            // User is an employer
+            const user = employerRows[0];
+            const passwordMatch = await bcrypt.compare(password, user.password);
+
+            if (!passwordMatch) {
+                return res.status(401).json({ err: 'Invalid Email or Password' });
+            }
+
+            const token = jwt.sign({ userId: user.id, work_email: user.work_email }, secretKey, { expiresIn: '1h' });
+            return res.status(200).json({ message: 'Login Successful', token, userType: 'employer' });
+        }
+
+        // If no user found, return an error
+        return res.status(401).json({ err: 'Invalid Email or Password' });
     } catch (err) {
         console.log(err);
-        res.status(500).json({err: 'Internal Server Error'})
+        res.status(500).json({ err: 'Internal Server Error' });
     }
-})
+});
 
 module.exports = router
