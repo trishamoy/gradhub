@@ -50,7 +50,7 @@ router.get('/job_post/:id', authenticationToken, async (req, res) => {
     let employer_id = req.params.id;
 
     try {
-        db.query(`SELECT jp.*, ja.application_status, ja.job_seeker_id FROM job_post jp LEFT JOIN job_application ja ON jp.id = ja.job_post_id AND jp.employer_id = ${employer_id}`, (err, result) => {
+        db.query(`SELECT jp.*, ja.application_status, ja.job_seeker_id, js.fullname, js.email FROM job_post jp LEFT JOIN job_application ja ON jp.id = ja.job_post_id LEFT JOIN job_seeker js ON ja.job_seeker_id = js.id WHERE jp.employer_id = ${employer_id}`, (err, result) => {
             if (err) {
                 res.status(500).json({ err: 'Internal Server Error' });
             } else {
