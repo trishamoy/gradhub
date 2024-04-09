@@ -65,8 +65,33 @@ router.post('/job_application/:job_seeker_id/:job_post_id', authenticationToken,
     }
 })
 
-router.delete('/job_application/:job_application_id', authenticationToken, async (req, res) => {
-    let job_application_id = req.params.job_application_id;
+router.put('/job_application/:id', authenticationToken, async (req, res) => {
+    let id = req.params.id;
+
+    try {
+        const {
+            application_status,
+        } = req.body;
+
+        db.query('UPDATE job_application SET application_status = ? WHERE id = ?',
+            [
+                application_status,
+                id
+            ], (err, result, fields) => {
+                    if (err) {
+                        res.status(500).json({ err: 'Internal Server Error' });
+                    } else {
+                        res.status(200).json(result);
+                    }
+                })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ err: 'Internal Server Error' })
+    }
+})
+
+router.delete('/job_application/:application_id', authenticationToken, async (req, res) => {
+    let job_application_id = req.params.application_id;
 
     try {
         db.query('DELETE FROM job_application WHERE id = ?', job_application_id, (err, result, fields) => {
